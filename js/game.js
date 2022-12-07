@@ -42,5 +42,30 @@ function create() {
  */
 function update() {
   if (cursors.left.isDown) {
+    let x = player.x - PLAYER_VELOCITY;
+    if (x < (player.width / 2) * PLAYER_SCALE) {
+      x = (player.width / 2) * PLAYER_SCALE;
+    }
+    player.setX(x);
+  } else if (cursors.right.isDown) {
+    let x = player.x + PLAYER_VELOCITY;
+    if (x > SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE) {
+      x = SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE;
+    }
+    player.setX(x);
+  }
+
+  if (cursors.up.isDown) {
+    let y = player.y - PLAYER_VELOCITY;
+    if (y < (player.height / 2) * PLAYER_SCALE) {
+      y = (player.height / 2) * PLAYER_SCALE;
+    }
+    player.setY(y);
+  } else if (cursors.down.isDown) {
+    let y = player.y + PLAYER_VELOCITY;
+    if (y > SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE) {
+      y = SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE;
+    }
+    player.setY(y);
   }
 }
