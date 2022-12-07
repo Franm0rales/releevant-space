@@ -52,7 +52,7 @@ function create() {
   //map space key status
   spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   //Texto
-  scoreText = this.add.text(5, 5, "Score: 0", {
+  scoreText = this.add.text(5, 5, "Score:" + score, {
     font: "32px Arial",
     fill: "#0095DD",
   });
