@@ -12,6 +12,9 @@ let contBullet = 0;
 let frame = -1;
 let score = 0;
 let scoreText;
+let contador=0;
+let cargador=30
+
 
 /**
  * It prelaods all the assets required in the game.
@@ -20,12 +23,17 @@ function preload() {
   this.load.image("sky", "assets/backgrounds/blue.png");
   this.load.image("player", "assets/characters/player.png");
   this.load.image("enemy", "assets/characters/alien1.png");
+  this.load.image("enemy1", "assets/characters/alien2.png");
+  this.load.image("enemy2", "assets/characters/alien3.png");
+  this.load.audio('disparo','assets/sounds/disparo.mp3')
+  this.load.image('fuego', 'assets/backgrounds/fuego.png');
 }
 
 /**
  * It creates the scene and place the game objects.
  */
 function create() {
+  
   // scene background
   background1 = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "sky");
   background2 = this.add.image(
@@ -33,7 +41,11 @@ function create() {
     SCREEN_HEIGHT / 2 - background1.height,
     "sky"
   );
+  //sonido
+  this.disparo=this.sound.add("disparo")
+  this.disparo.play();
 
+  
   // playet setup
   player = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "player");
   player.setX((SCREEN_WIDTH - player.width * PLAYER_SCALE) / 2);
@@ -50,9 +62,14 @@ function create() {
   cursors = this.input.keyboard.createCursorKeys();
 
   //map space key status
-  spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE,)
+  
   //Texto
   scoreText = this.add.text(5, 5, "Score:" + score, {
+    font: "32px Arial",
+    fill: "#0095DD",
+  });
+  cargadorText = this.add.text(620, 5, "Cargador:" + cargador, {
     font: "32px Arial",
     fill: "#0095DD",
   });
@@ -71,12 +88,15 @@ function update() {
   moverPlayer();
   moverFondo();
   if (frame < 0) {
-    disparar(this);
+    disparar(this)
+    
   }
   if (contBullet > 0) {
     moverBala();
   }
   frame--;
+  contador--;
+  
 }
 
 function moverPlayer() {
@@ -130,18 +150,47 @@ function disparar(engine) {
         10,
         0x6666ff
       )
+      
     );
+   
     contBullet++;
     frame = 12;
   }
-}
+  
+ 
 
+}
 function moverBala() {
   for (let bala of bullet) {
     bala.setY(bala.y - BULLET_VELOCITY);
-
+    colision(bala)
     if (bala.y <= 0 - bala.height) {
       bala.destroy();
     }
+    colision(bala)
+
   }
 }
+
+  function colision(bala) {
+     if ((bala.x>=enemy.x-(enemy.width*ENEMY_SCALE)/2)&&
+     (bala.x<=enemy.x+(enemy.width*ENEMY_SCALE)/2)&&
+     (bala.y>=enemy.y-(enemy.height*ENEMY_SCALE)/2)&&
+     (bala.y<=enemy.y+(enemy.height*ENEMY_SCALE)/2)
+    
+  ) {
+    if(contador<1){
+    collectEnemy(bala,enemy)}
+    enemy.destroy()
+    bala.destroy()
+  }
+
+};
+function collectEnemy(bala,enemy){
+  contador=24
+  score+=10
+  scoreText.setText("Score:"+score)
+  }
+
+
+ 
