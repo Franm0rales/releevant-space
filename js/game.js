@@ -4,7 +4,8 @@
 let player;
 let enemy;
 let cursors;
-
+let background;
+let background2;
 /**
  * It prelaods all the assets required in the game.
  */
@@ -19,7 +20,12 @@ function preload() {
  */
 function create() {
   // scene background
-  this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "sky");
+  background = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "sky");
+  background2 = this.add.image(
+    SCREEN_WIDTH / 2,
+    SCREEN_HEIGHT / 2 - background.height,
+    "sky"
+  );
 
   // playet setup
   player = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "player");
@@ -41,31 +47,45 @@ function create() {
  * Updates each game object of the scene.
  */
 function update() {
-  if (cursors.left.isDown) {
-    let x = player.x - PLAYER_VELOCITY;
-    if (x < (player.width / 2) * PLAYER_SCALE) {
-      x = (player.width / 2) * PLAYER_SCALE;
+  moverPlayer();
+  moverFondo();
+  function moverFondo() {
+    background.setY(background.y + BACKGROUND_VELOCITY);
+    background2.setY(background2.y + BACKGROUND_VELOCITY);
+    if (background.y > background.height + SCREEN_HEIGHT / 2) {
+      background.setY(background2.y - background.height);
+      let temporal = background;
+      background = background2;
+      background2 = temporal;
     }
-    player.setX(x);
-  } else if (cursors.right.isDown) {
-    let x = player.x + PLAYER_VELOCITY;
-    if (x > SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE) {
-      x = SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE;
-    }
-    player.setX(x);
   }
+  function moverPlayer() {
+    if (cursors.left.isDown) {
+      let x = player.x - PLAYER_VELOCITY;
+      if (x < (player.width / 2) * PLAYER_SCALE) {
+        x = (player.width / 2) * PLAYER_SCALE;
+      }
+      player.setX(x);
+    } else if (cursors.right.isDown) {
+      let x = player.x + PLAYER_VELOCITY;
+      if (x > SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE) {
+        x = SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE;
+      }
+      player.setX(x);
+    }
 
-  if (cursors.up.isDown) {
-    let y = player.y - PLAYER_VELOCITY;
-    if (y < (player.height / 2) * PLAYER_SCALE) {
-      y = (player.height / 2) * PLAYER_SCALE;
+    if (cursors.up.isDown) {
+      let y = player.y - PLAYER_VELOCITY;
+      if (y < (player.height / 2) * PLAYER_SCALE) {
+        y = (player.height / 2) * PLAYER_SCALE;
+      }
+      player.setY(y);
+    } else if (cursors.down.isDown) {
+      let y = player.y + PLAYER_VELOCITY;
+      if (y > SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE) {
+        y = SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE;
+      }
+      player.setY(y);
     }
-    player.setY(y);
-  } else if (cursors.down.isDown) {
-    let y = player.y + PLAYER_VELOCITY;
-    if (y > SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE) {
-      y = SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE;
-    }
-    player.setY(y);
   }
 }
