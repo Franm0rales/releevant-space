@@ -4,15 +4,20 @@
 let player;
 let enemy;
 let cursors;
-let background;
+let background1;
 let background2;
+let spaceBar;
+let bullet = [];
+let contBullet = 0;
+let frame = -1;
+
 /**
  * It prelaods all the assets required in the game.
  */
 function preload() {
   this.load.image("sky", "assets/backgrounds/blue.png");
   this.load.image("player", "assets/characters/player.png");
-  this.load.image("enemy", "assets/characters/alien1.png");
+  this.load.image("enemy", "assets/characters/alien3.png");
 }
 
 /**
@@ -20,10 +25,10 @@ function preload() {
  */
 function create() {
   // scene background
-  background = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "sky");
+  background1 = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "sky");
   background2 = this.add.image(
     SCREEN_WIDTH / 2,
-    SCREEN_HEIGHT / 2 - background.height,
+    SCREEN_HEIGHT / 2 - background1.height,
     "sky"
   );
 
@@ -41,51 +46,95 @@ function create() {
 
   //cursors map into game engine
   cursors = this.input.keyboard.createCursorKeys();
+
+  //map space key status
+  spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
 
 /**
  * Updates each game object of the scene.
  */
 function update() {
+  this.add.ellipse(
+    player.x,
+    player.y - (player.height / 2) * PLAYER_SCALE,
+    180,
+    200
+  );
   moverPlayer();
   moverFondo();
-  function moverFondo() {
-    background.setY(background.y + BACKGROUND_VELOCITY);
-    background2.setY(background2.y + BACKGROUND_VELOCITY);
-    if (background.y > background.height + SCREEN_HEIGHT / 2) {
-      background.setY(background2.y - background.height);
-      let temporal = background;
-      background = background2;
-      background2 = temporal;
-    }
+  if (frame < 0) {
+    disparar(this);
   }
-  function moverPlayer() {
-    if (cursors.left.isDown) {
-      let x = player.x - PLAYER_VELOCITY;
-      if (x < (player.width / 2) * PLAYER_SCALE) {
-        x = (player.width / 2) * PLAYER_SCALE;
-      }
-      player.setX(x);
-    } else if (cursors.right.isDown) {
-      let x = player.x + PLAYER_VELOCITY;
-      if (x > SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE) {
-        x = SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE;
-      }
-      player.setX(x);
-    }
+  if (contBullet > 0) {
+    moverBala();
+  }
+  frame--;
+}
 
-    if (cursors.up.isDown) {
-      let y = player.y - PLAYER_VELOCITY;
-      if (y < (player.height / 2) * PLAYER_SCALE) {
-        y = (player.height / 2) * PLAYER_SCALE;
-      }
-      player.setY(y);
-    } else if (cursors.down.isDown) {
-      let y = player.y + PLAYER_VELOCITY;
-      if (y > SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE) {
-        y = SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE;
-      }
-      player.setY(y);
+function moverPlayer() {
+  if (cursors.left.isDown) {
+    let xPlayer = player.x - PLAYER_VELOCITY;
+    if (xPlayer < (player.width / 2) * PLAYER_SCALE) {
+      xPlayer = (player.width / 2) * PLAYER_SCALE;
+    }
+    player.setX(xPlayer);
+  } else if (cursors.right.isDown) {
+    let xPlayer = player.x + PLAYER_VELOCITY;
+    if (xPlayer > SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE) {
+      xPlayer = SCREEN_WIDTH - (player.width / 2) * PLAYER_SCALE;
+    }
+    player.setX(xPlayer);
+  }
+  if (cursors.up.isDown) {
+    let yPlayer = player.y - PLAYER_VELOCITY;
+    if (yPlayer < (player.height / 2) * PLAYER_SCALE) {
+      yPlayer = (player.height / 2) * PLAYER_SCALE;
+    }
+    player.setY(yPlayer);
+  } else if (cursors.down.isDown) {
+    let yPlayer = player.y + PLAYER_VELOCITY;
+    if (yPlayer > SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE) {
+      yPlayer = SCREEN_HEIGHT - (player.height / 2) * PLAYER_SCALE;
+    }
+    player.setY(yPlayer);
+  }
+}
+
+function moverFondo() {
+  background1.setY(background1.y + BACKGROUND_VELOCITY);
+  background2.setY(background2.y + BACKGROUND_VELOCITY);
+
+  if (background1.y > background1.height + SCREEN_HEIGHT / 2) {
+    background1.setY(background2.y - background1.height);
+    let temp = background1;
+    background1 = background2;
+    background2 = temp;
+  }
+}
+
+function disparar(engine) {
+  if (spaceBar.isDown) {
+    bullet.push(
+      engine.add.ellipse(
+        player.x,
+        player.y - (player.height / 2) * PLAYER_SCALE,
+        5,
+        10,
+        0x6666ff
+      )
+    );
+    contBullet++;
+    frame = 10;
+  }
+}
+
+function moverBala() {
+  for (let bala of bullet) {
+    bala.setY(bala.y - BULLET_VELOCITY);
+
+    if (bala.y <= 0 - bala.height) {
+      bala.destroy();
     }
   }
 }
