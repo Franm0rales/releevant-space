@@ -10,6 +10,8 @@ let spaceBar;
 let bullet = [];
 let contBullet = 0;
 let frame = -1;
+let score = 0;
+let scoreText;
 
 /**
  * It prelaods all the assets required in the game.
@@ -17,7 +19,7 @@ let frame = -1;
 function preload() {
   this.load.image("sky", "assets/backgrounds/blue.png");
   this.load.image("player", "assets/characters/player.png");
-  this.load.image("enemy", "assets/characters/alien3.png");
+  this.load.image("enemy", "assets/characters/alien1.png");
 }
 
 /**
@@ -49,6 +51,11 @@ function create() {
 
   //map space key status
   spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  //Texto
+  scoreText = this.add.text(5, 5, "Score: 0", {
+    font: "32px Arial",
+    fill: "#0095DD",
+  });
 }
 
 /**
@@ -125,7 +132,7 @@ function disparar(engine) {
       )
     );
     contBullet++;
-    frame = 10;
+    frame = 12;
   }
 }
 
