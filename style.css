@@ -1,4 +1,16 @@
 body{
     display: flex;
     justify-content: center;
+    position: relative;
+}
+.restart{
+    padding: 10px;
+    bottom:-50px; 
+    width: 840;
+    height: 300;
+  background-color: rgb(1, 1, 26);
+   text-align: center;
+   position: absolute;
+    color: rgb(242, 237, 237);
+    border-radius: 8px;
 }

@@ -339,4 +339,11 @@ function moverEnemy() {
       pausa = true;
     }
 }
-
+function reiniciar() {
+  document.getElementById("reiniciar").innerHTML+=`<a class="restart" href="index.html">
+  <input id="reiniciar"  type="button" value="Reiniciar" 
+  onclick="reiniciar()"  /></a> ` 
+}
+function intro(){
+  document.getElementById("intro").innerHTML+=`<body><style blackground-img:"intro.png"></body>` 
+}
