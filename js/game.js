@@ -14,7 +14,7 @@ let frame = -1;
 let score = 0;
 let scoreText;
 let contador = 0;
-let cargador = 50;
+let cargador = 30;
 let explosion;
 let elapsedFrames;
 let fuego;
@@ -22,6 +22,9 @@ let disparo;
 let recarga;
 let enemys = [];
 let modaba;
+let enterBar;
+let carga;
+let win;
 
 /**
  * It prelaods all the assets required in the game.
@@ -34,10 +37,12 @@ function preload() {
   this.load.image("enemy2", "assets/characters/alien3.png");
   this.load.audio("disparo", "assets/sounds/sonido1.mp3");
   this.load.audio("modaba", "assets/sounds/modaba.mp3");
+  this.load.audio("carga", "assets/sounds/cargapistola.mp3");
   this.load.image("fuego", "assets/backgrounds/fuego.png");
   this.load.image("red", "assets/particles/red.png");
   this.load.image("cargador", "assets/characters/cargador.png");
   this.load.image("gameOver", "assets/backgrounds/game_over.png");
+  this.load.image("win", "assets/backgrounds/win.png");
 }
 
 /**
@@ -54,6 +59,7 @@ function create() {
   //sonido
   disparo = this.sound.add("disparo");
   modaba = this.sound.add("modaba");
+  carga = this.sound.add("carga")
 
   // playet setup
   player = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "player");
@@ -66,21 +72,28 @@ function create() {
   enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2);
   enemy.setY((enemy.height * ENEMY_SCALE) / 2);
   enemy.setScale(ENEMY_SCALE);
-
+  //Vidas
+  
   //cursors map into game engine
   cursors = this.input.keyboard.createCursorKeys();
 
   //map space key status
   spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+  //input restar game
+  enterBar=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER,()=>this.scene.start("game"));
   //Game Over
   gameOver = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "gameOver");
   gameOver.setX(SCREEN_WIDTH + gameOver.width);
   gameOver.setY(SCREEN_HEIGHT + gameOver.height);
+  //Win
+  win = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "win");
+  win.setX(SCREEN_WIDTH + win.width);
+  win.setY(SCREEN_HEIGHT + win.height);
   //Particulas
   elapsedFrames = FRAMES_PER_BULLET;
 
   fuego = this.add.particles("fuego").createEmitter({
-    scale: { min: 0.3, max: 0 },
+    scale: { min: 0.2, max: 0 },
     speed: { min: 100, max: 200 },
     quantity: 0.2,
     frequency: 0.1,
@@ -121,6 +134,7 @@ function create() {
  * Updates each game object of the scene.
  */
 function update() {
+ 
   if (pausa) {
     return;
   }
@@ -278,8 +292,9 @@ function recargar() {
   ) {
     recarga.setX(SCREEN_WIDTH + 1000);
     recarga.setY(SCREEN_HEIGHT + 1000);
-    cargador = 50;
+    cargador = 30;
     cargadorText.setText("Cargador:" + cargador);
+    carga.play()
   }
 }
 function moverEnemy() {
@@ -292,15 +307,24 @@ function moverEnemy() {
     player.y + (player.height / 3) * PLAYER_SCALE >=
       enemy.y - (enemy.height * RELOAD_SCALE) / 2 &&
     player.y - (player.height / 3) * PLAYER_SCALE <=
-      enemy.y + (enemy.height * RELOAD_SCALE) / 2
+      enemy.y + (enemy.height * RELOAD_SCALE) / 2||
+      enemy.y>= SCREEN_HEIGHT
   ) {
     gameOver.setX(SCREEN_WIDTH / 2);
-    gameOver.setY(SCREEN_HEIGHT / 2);
+    gameOver.setY(SCREEN_WIDTH / 2);
     enemy.destroy();
     player.destroy();
     explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
     modaba.play();
     pausa = true;
-  }
+    }else if(score>=200){
+      enemy.setY(enemy.y + ENEMY_VELOCITY*1.3);
+    }else if(score===500){
+      
+      win.setX(SCREEN_WIDTH /2)
+      win.setY(SCREEN_WIDTH /2)
+      pausa = true;
+    }
 }
+
