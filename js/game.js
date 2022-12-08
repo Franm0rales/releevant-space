@@ -340,7 +340,5 @@ function moverEnemy() {
     }
 }
 function reiniciar() {
-  document.getElementById("reiniciar").innerHTML+=`<a class="restart" href="index.html">
-  <input id="reiniciar"  type="button" value="Reiniciar" 
-  onclick="reiniciar()"  /></a> ` 
+  document.getElementById("reiniciar").innerHTML+=`<a class="restart" href="index.html"> <li><span>PLAY</span></li></a>` 
 }
