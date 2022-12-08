@@ -25,6 +25,7 @@ let modaba;
 let enterBar;
 let carga;
 let win;
+let final;
 
 /**
  * It prelaods all the assets required in the game.
@@ -38,11 +39,15 @@ function preload() {
   this.load.audio("disparo", "assets/sounds/sonido1.mp3");
   this.load.audio("modaba", "assets/sounds/modaba.mp3");
   this.load.audio("carga", "assets/sounds/cargapistola.mp3");
+  this.load.audio("win", "assets/sounds/win.mp3");
   this.load.image("fuego", "assets/backgrounds/fuego.png");
   this.load.image("red", "assets/particles/red.png");
   this.load.image("cargador", "assets/characters/cargador.png");
   this.load.image("gameOver", "assets/backgrounds/game_over.png");
   this.load.image("win", "assets/backgrounds/win.png");
+  this.load.image("confetti", "assets/particles/confetti.png");
+
+  
 }
 
 /**
@@ -60,6 +65,7 @@ function create() {
   disparo = this.sound.add("disparo");
   modaba = this.sound.add("modaba");
   carga = this.sound.add("carga")
+  final=this.sound.add("win")
 
   // playet setup
   player = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "player");
@@ -112,10 +118,13 @@ function create() {
     on: false,
   });
   //Texto
+  
   scoreText = this.add.text(5, 5, "Score:" + score, {
     font: "32px Arial",
+    fontSize:"32px",
     fill: "#0095DD",
   });
+  
   cargadorText = this.add.text(620, 5, "Cargador:" + cargador, {
     font: "32px Arial",
     fill: "#0095DD",
@@ -320,10 +329,13 @@ function moverEnemy() {
     pausa = true;
     }else if(score>=200){
       enemy.setY(enemy.y + ENEMY_VELOCITY*1.3);
-    }else if(score===500){
+    }
+    if(score===500){
       
       win.setX(SCREEN_WIDTH /2)
       win.setY(SCREEN_WIDTH /2)
+      final.play();
+      
       pausa = true;
     }
 }
