@@ -344,6 +344,3 @@ function reiniciar() {
   <input id="reiniciar"  type="button" value="Reiniciar" 
   onclick="reiniciar()"  /></a> ` 
 }
-function intro(){
-  document.getElementById("intro").innerHTML+=`<body><style blackground-img:"intro.png"></body>` 
-}
