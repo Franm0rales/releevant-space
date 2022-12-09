@@ -26,6 +26,11 @@ let enterBar;
 let carga;
 let win;
 let final;
+let inicio = 0;
+let vida;
+let vidas = [];
+let vidasText;
+let numVidas = 3;
 
 /**
  * It prelaods all the assets required in the game.
@@ -45,9 +50,8 @@ function preload() {
   this.load.image("cargador", "assets/characters/cargador.png");
   this.load.image("gameOver", "assets/backgrounds/game_over.png");
   this.load.image("win", "assets/backgrounds/win.png");
-  this.load.image("confetti", "assets/particles/confetti.png");
-
-  
+  this.load.image("pausa", "assets/backgrounds/pause.png");
+  this.load.image("vidas", "assets/characters/vidas.png");
 }
 
 /**
@@ -64,8 +68,8 @@ function create() {
   //sonido
   disparo = this.sound.add("disparo");
   modaba = this.sound.add("modaba");
-  carga = this.sound.add("carga")
-  final=this.sound.add("win")
+  carga = this.sound.add("carga");
+  final = this.sound.add("win");
 
   // playet setup
   player = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "player");
@@ -79,14 +83,28 @@ function create() {
   enemy.setY((enemy.height * ENEMY_SCALE) / 2);
   enemy.setScale(ENEMY_SCALE);
   //Vidas
-  
+  // vida = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
+
+  vida = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
+  vida.setVisible(false);
+  for (let i = 0; i < numVidas; i++) {
+    vidas.pushthis.add.image(
+      SCREEN_WIDTH / 2 + i * vida.width,
+      vida.height * VIDAS_ESCALE,
+      "vidas"
+    );
+  }
+
   //cursors map into game engine
   cursors = this.input.keyboard.createCursorKeys();
 
   //map space key status
   spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
   //input restar game
-  enterBar=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER,()=>this.scene.start("game"));
+  enterBar = this.input.keyboard.addKey(
+    Phaser.Input.Keyboard.KeyCodes.ENTER,
+    () => this.scene.start("game")
+  );
   //Game Over
   gameOver = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "gameOver");
   gameOver.setX(SCREEN_WIDTH + gameOver.width);
@@ -95,6 +113,8 @@ function create() {
   win = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "win");
   win.setX(SCREEN_WIDTH + win.width);
   win.setY(SCREEN_HEIGHT + win.height);
+  //Pause
+
   //Particulas
   elapsedFrames = FRAMES_PER_BULLET;
 
@@ -118,16 +138,16 @@ function create() {
     on: false,
   });
   //Texto
-  
+
   scoreText = this.add.text(5, 5, "Score:" + score, {
     font: "32px Arial",
-    fontSize:"32px",
-    fill: "#0095DD",
+    fontSize: "32px",
+    fill: "#FFFFFF",
   });
-  
+
   cargadorText = this.add.text(620, 5, "Cargador:" + cargador, {
     font: "32px Arial",
-    fill: "#0095DD",
+    fill: "#FFFFFF",
   });
   recarga = this.add.image(
     (SCREEN_WIDTH * RELOAD_SCALE) / 2,
@@ -142,46 +162,48 @@ function create() {
 /**
  * Updates each game object of the scene.
  */
+let playPause = false;
+
 function update() {
- 
-  if (pausa) {
-    return;
-  }
-  //Cargador
-  if (cargador === 0) {
-    recarga.setX(
-      Math.random() * (SCREEN_WIDTH - recarga.width * ENEMY_SCALE) +
-        (recarga.width / 2) * ENEMY_SCALE
-    );
+  if (playPause) {
+    if (pausa) {
+      return;
+    }
+    //Cargador
+    if (cargador === 0) {
+      recarga.setX(
+        Math.random() * (SCREEN_WIDTH - recarga.width * ENEMY_SCALE) +
+          (recarga.width / 2) * ENEMY_SCALE
+      );
 
-    recarga.setY(
-      Math.random() * (SCREEN_HEIGHT - recarga.height * ENEMY_SCALE) +
-        (recarga.height / 2) * ENEMY_SCALE
-    );
-    recarga.setScale(RELOAD_SCALE);
-    cargador = -1;
-  }
+      recarga.setY(
+        Math.random() * (SCREEN_HEIGHT - recarga.height * ENEMY_SCALE) +
+          (recarga.height / 2) * ENEMY_SCALE
+      );
+      recarga.setScale(RELOAD_SCALE);
+      cargador = -1;
+    }
 
-  this.add.ellipse(
-    player.x,
-    player.y - (player.height / 2) * PLAYER_SCALE,
-    180,
-    200
-  );
-  recargar();
-  moverPlayer();
-  moverFondo();
-  moverEnemy();
-  if (frame < 0) {
-    disparar(this);
+    this.add.ellipse(
+      player.x,
+      player.y - (player.height / 2) * PLAYER_SCALE,
+      180,
+      200
+    );
+    recargar();
+    moverPlayer();
+    moverFondo();
+    moverEnemy();
+    if (frame < 0) {
+      disparar(this);
+    }
+    if (contBullet > 0) {
+      moverBala();
+    }
+    frame--;
+    contador--;
   }
-  if (contBullet > 0) {
-    moverBala();
-  }
-  frame--;
-  contador--;
 }
-
 function moverPlayer() {
   if (cursors.left.isDown) {
     let xPlayer = player.x - PLAYER_VELOCITY;
@@ -303,42 +325,49 @@ function recargar() {
     recarga.setY(SCREEN_HEIGHT + 1000);
     cargador = 30;
     cargadorText.setText("Cargador:" + cargador);
-    carga.play()
+    carga.play();
   }
 }
 function moverEnemy() {
   enemy.setY(enemy.y + ENEMY_VELOCITY);
   if (
-    player.x + (player.width / 3) * PLAYER_SCALE >=
-      enemy.x - (enemy.width * RELOAD_SCALE) / 2 &&
-    player.x - (player.width / 3) * PLAYER_SCALE <=
-      enemy.x + (enemy.width * RELOAD_SCALE) / 2 &&
-    player.y + (player.height / 3) * PLAYER_SCALE >=
-      enemy.y - (enemy.height * RELOAD_SCALE) / 2 &&
-    player.y - (player.height / 3) * PLAYER_SCALE <=
-      enemy.y + (enemy.height * RELOAD_SCALE) / 2||
-      enemy.y>= SCREEN_HEIGHT
+    (player.x + (player.width / 3) * PLAYER_SCALE >=
+      enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
+      player.x - (player.width / 3) * PLAYER_SCALE <=
+        enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
+      player.y + (player.height / 3) * PLAYER_SCALE >=
+        enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
+      player.y - (player.height / 3) * PLAYER_SCALE <=
+        enemy.y + (enemy.height * ENEMY_SCALE) / 2) ||
+    enemy.y >= SCREEN_HEIGHT
   ) {
-    gameOver.setX(SCREEN_WIDTH / 2);
-    gameOver.setY(SCREEN_WIDTH / 2);
+    FRAMES_PER_BULLET + 20;
+    numVidas--;
+    console.log(numVidas);
     enemy.destroy();
     player.destroy();
     explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
-    modaba.play();
-    pausa = true;
-    }else if(score>=200){
-      enemy.setY(enemy.y + ENEMY_VELOCITY*1.3);
-    }
-    if(score===500){
-      
-      win.setX(SCREEN_WIDTH /2)
-      win.setY(SCREEN_WIDTH /2)
-      final.play();
-      
+    if (numVidas < 1) {
+      gameOver.setX(SCREEN_WIDTH / 2);
+      gameOver.setY(SCREEN_WIDTH / 2);
+      modaba.play();
       pausa = true;
     }
+  } else if (score >= 200) {
+    enemy.setY(enemy.y + ENEMY_VELOCITY * 1.3);
+  }
+  if (score === 500) {
+    win.setX(SCREEN_WIDTH / 2);
+    win.setY(SCREEN_WIDTH / 2);
+    final.play();
+    pausa = true;
+  }
 }
-function reiniciar() {
-  document.getElementById("reiniciar").innerHTML+=`<a class="restart" href="index.html"> <li><span>PLAY</span></li></a>` 
+
+function play() {
+  playPause = true;
+}
+function pause() {
+  playPause = false;
 }

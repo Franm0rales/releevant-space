@@ -9,6 +9,7 @@ body{
 nav ul {
 	list-style-type: none;
 	padding: 0;
+	text-decoration: none;
 }
 
 nav ul li {

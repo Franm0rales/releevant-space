@@ -7,9 +7,10 @@
   <body>
     <nav>
       <ul>
-        <a class="restart" href="index.html"> <li><span>PLAY</span></li></a>
-        <a class="" href="index.html"> <li><span>PLAY</span></li></a>
-        <a class="" href="index.html"> <li><span>PLAY</span></li></a>
+        <a onclick="play()" class="" href="#"> <li><span>PLAY</span></li></a>
+        <a class=""  href="index.html"> <li><span>RESTART</span></li></a>
+        <a onclick="pause()" class="" href="#"> <li><span>PAUSE</span></li></a>
+        <a class="" target="_blank" href="https://github.com/Franm0rales/releevant-space"> <li><span>CODE</CODE></span></li></a>
       
       </ul>
     </nav>
@@ -29,6 +30,7 @@
       const BULLET_VELOCITY=5;
       const FRAMES_PER_BULLET = 20;
       const ENEMY_VELOCITY=0.8
+      const VIDAS_ESCALE=0.5
       // game config
       const config = {
         type: Phaser.AUTO,
