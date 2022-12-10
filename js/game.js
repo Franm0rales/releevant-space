@@ -28,9 +28,12 @@ let win;
 let final;
 let inicio = 0;
 let vida;
+let vida1
+let vida2
 let vidas = [];
 let vidasText;
 let numVidas = 3;
+let frameVidas;
 
 /**
  * It prelaods all the assets required in the game.
@@ -83,17 +86,24 @@ function create() {
   enemy.setY((enemy.height * ENEMY_SCALE) / 2);
   enemy.setScale(ENEMY_SCALE);
   //Vidas
-  // vida = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
+ 
 
-  vida = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
-  vida.setVisible(false);
-  for (let i = 0; i < numVidas; i++) {
-    vidas.pushthis.add.image(
-      SCREEN_WIDTH / 2 + i * vida.width,
-      vida.height * VIDAS_ESCALE,
-      "vidas"
-    );
-  }
+  
+
+    vida = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
+    vida1 = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
+    vida2 = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "vidas");
+    vida.setX((SCREEN_WIDTH - vida.width * VIDAS_SCALE) / 2 + 0 *vida.width*VIDAS_SCALE-30);
+    vida1.setX((SCREEN_WIDTH - vida1.width * VIDAS_SCALE) / 2 + 1 *vida1.width*VIDAS_SCALE-30);
+    vida2.setX((SCREEN_WIDTH - vida2.width * VIDAS_SCALE) / 2 + 2 *vida2.width*VIDAS_SCALE-30);
+    vida.setY((vida.height+5 * VIDAS_SCALE) / 2);
+    vida1.setY((vida.height+5 * VIDAS_SCALE) / 2);
+    vida2.setY((vida.height+5 * VIDAS_SCALE) / 2);
+
+    vida.setScale(VIDAS_SCALE)
+    vida1.setScale(VIDAS_SCALE)
+    vida2.setScale(VIDAS_SCALE)
+  
 
   //cursors map into game engine
   cursors = this.input.keyboard.createCursorKeys();
@@ -116,6 +126,7 @@ function create() {
   //Pause
 
   //Particulas
+  frameVidas=FRAMES_PER_LIFE
   elapsedFrames = FRAMES_PER_BULLET;
 
   fuego = this.add.particles("fuego").createEmitter({
@@ -165,6 +176,7 @@ function create() {
 let playPause = false;
 
 function update() {
+  
   if (playPause) {
     if (pausa) {
       return;
@@ -202,6 +214,7 @@ function update() {
     }
     frame--;
     contador--;
+    frameVidas--
   }
 }
 function moverPlayer() {
@@ -284,7 +297,9 @@ function moverBala() {
     bullet.splice(index, 1);
   }
 }
+function crearEnemy(){
 
+}
 function colision(bala) {
   if (
     bala.x >= enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
@@ -341,19 +356,29 @@ function moverEnemy() {
         enemy.y + (enemy.height * ENEMY_SCALE) / 2) ||
     enemy.y >= SCREEN_HEIGHT
   ) {
-    FRAMES_PER_BULLET + 20;
-    numVidas--;
-    console.log(numVidas);
-    enemy.destroy();
-    player.destroy();
+    if(frameVidas<0){
+      frameVidas=200
+      numVidas--;
+      if(numVidas==2){
+      vida2.setVisible(false);
+      
+    }else if(numVidas==1){
+      vida1.setVisible(false);
+    }
+      console.log(numVidas);
+      enemy.destroy();
+    
     explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
-    if (numVidas < 1) {
+    if (numVidas <= 0) {
       gameOver.setX(SCREEN_WIDTH / 2);
       gameOver.setY(SCREEN_WIDTH / 2);
       modaba.play();
       pausa = true;
+      vida.setVisible(false);
+      player.destroy();
     }
+  }
   } else if (score >= 200) {
     enemy.setY(enemy.y + ENEMY_VELOCITY * 1.3);
   }

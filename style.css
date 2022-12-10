@@ -26,13 +26,13 @@ nav ul li {
 	margin: 0.5em;
 	cursor: pointer;
     padding: 8PX;
-    
+    text-decoration: none;
 }
 
 nav ul li span {
 	color: white;
 	mix-blend-mode: difference;
-    
+    text-decoration: none;
 }
 
 nav ul li::before {
@@ -45,8 +45,10 @@ nav ul li::before {
 	top: 0;
 	left: -0.75em;
 	transition: 0.5s ease-out;
+	text-decoration: none;
 }
 
 nav ul li:hover::before {
 	transform: scale(7);
+	text-decoration: none;
 }
