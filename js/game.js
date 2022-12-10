@@ -298,7 +298,15 @@ function moverBala() {
   }
 }
 function crearEnemy(){
-
+  for(let i =-1 ; i< 4 ; i++){
+    const enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
+    enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2 - enemy.width * ENEMY_SCALE + i * enemy.width * ENEMY_SCALE );
+    enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+    enemy.setScale(ENEMY_SCALE);
+ 
+    enemys.push(enemy)
+    
+    }
 }
 function colision(bala) {
   if (
@@ -366,7 +374,7 @@ function moverEnemy() {
       vida1.setVisible(false);
     }
       console.log(numVidas);
-      enemy.destroy();
+      // enemy.destroy();
     
     explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
