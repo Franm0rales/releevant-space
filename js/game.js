@@ -307,24 +307,26 @@ function moverBala() {
   }
 }
 function colision(bala) {
+  for(enemy of enemys){
   if (
-    bala.x >= enemys.x - (enemys.width * ENEMY_SCALE) / 2 &&
-    bala.x <= enemys.x + (enemys.width * ENEMY_SCALE) / 2 &&
-    bala.y >= enemys.y - (enemys.height * ENEMY_SCALE) / 2 &&
-    bala.y <= enemys.y + (enemys.height * ENEMY_SCALE) / 2
+    bala.x >= enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
+    bala.x <= enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
+    bala.y >= enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
+    bala.y <= enemy.y + (enemy.height * ENEMY_SCALE) / 2
   ) {
     if (contador < 1) {
       collectEnemy();
     }
-    explosion.setPosition(enemys.x, enemys.y);
+    explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
-    enemys.setY((enemys.height * ENEMY_SCALE) / 2);
-    enemys.setX(
+    enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+    enemy.setX(
       Math.random() * (SCREEN_WIDTH - enemys.width * ENEMY_SCALE) +
         (enemys.width / 2) * ENEMY_SCALE
     );
     bala.destroy();
   }
+}
 }
 function collectEnemy() {
   contador = 24;
@@ -350,17 +352,18 @@ function recargar() {
   }
 }
 function moverEnemy() {
+  for(enemy of enemys){
   enemy.setY(enemy.y + ENEMY_VELOCITY);
   if (
     (player.x + (player.width / 3) * PLAYER_SCALE >=
-      enemys.x - (enemys.width * ENEMY_SCALE) / 2 &&
+      enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
       player.x - (player.width / 3) * PLAYER_SCALE <=
-        enemys.x + (enemys.width * ENEMY_SCALE) / 2 &&
+        enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
       player.y + (player.height / 3) * PLAYER_SCALE >=
-        enemys.y - (enemys.height * ENEMY_SCALE) / 2 &&
+        enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
       player.y - (player.height / 3) * PLAYER_SCALE <=
-        enemys.y + (enemys.height * ENEMY_SCALE) / 2) ||
-      enemys.y >= SCREEN_HEIGHT
+        enemy.y + (enemy.height * ENEMY_SCALE) / 2) ||
+      enemy.y >= SCREEN_HEIGHT
   ) {
     if(frameVidas<0){
       frameVidas=200
@@ -374,7 +377,7 @@ function moverEnemy() {
       console.log(numVidas);
       // enemy.destroy();
     
-    explosion.setPosition(enemys.x, enemys.y);
+    explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
     if (numVidas <= 0) {
       gameOver.setX(SCREEN_WIDTH / 2);
@@ -386,7 +389,7 @@ function moverEnemy() {
     }
   }
   } else if (score >= 200) {
-    enemys.setY(enemys.y + ENEMY_VELOCITY * 1.3);
+    enemy.setY(enemy.y + ENEMY_VELOCITY * 1.3);
   }
   if (score === 500) {
     win.setX(SCREEN_WIDTH / 2);
@@ -394,6 +397,7 @@ function moverEnemy() {
     final.play();
     pausa = true;
   }
+}
 }
 
 function play() {
