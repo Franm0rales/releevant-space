@@ -352,7 +352,19 @@ function recargar() {
   }
 }
 function moverEnemy() {
-  for(enemy of enemys){
+  let index = -1;
+  for (let i = 0; i < enemys.length; i++) {
+    enemys[i].setY(enemys[i].y - ENEMY_VELOCITY);
+    colision(enemys[i]);
+    if (enemys[i].y <= 0 - enemys[i].height) {
+      enemys[i].destroy();
+      index = i;
+    }
+    colision(player);
+  }
+  if (index >= 0) {
+    enemys.splice(index, 1);
+  
   enemy.setY(enemy.y + ENEMY_VELOCITY);
   if (
     (player.x + (player.width / 3) * PLAYER_SCALE >=
@@ -364,8 +376,11 @@ function moverEnemy() {
       player.y - (player.height / 3) * PLAYER_SCALE <=
         enemy.y + (enemy.height * ENEMY_SCALE) / 2) ||
       enemy.y >= SCREEN_HEIGHT
+      
   ) {
+
     if(frameVidas<0){
+      enemy.splice()
       frameVidas=200
       numVidas--;
       if(numVidas==2){
