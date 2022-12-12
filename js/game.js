@@ -22,7 +22,6 @@ let disparo;
 let recarga;
 let enemys = [];
 let modaba;
-let enterBar;
 let carga;
 let win;
 let final;
@@ -80,11 +79,21 @@ function create() {
   player.setY(SCREEN_HEIGHT - (player.height * PLAYER_SCALE) / 2);
   player.setScale(PLAYER_SCALE);
 
-  // enemy setup
-  enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
-  enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2);
-  enemy.setY((enemy.height * ENEMY_SCALE) / 2);
-  enemy.setScale(ENEMY_SCALE);
+  //enemy setup
+  // enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
+  // enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2);
+  // enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+  // enemy.setScale(ENEMY_SCALE);
+    for(let i =0 ; i< 3 ; i++){
+      enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
+      enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2 - enemy.width * ENEMY_SCALE + i * enemy.width * ENEMY_SCALE );
+      enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+      enemy.setScale(ENEMY_SCALE);
+   
+      enemys.push(enemy)
+      console.log(enemys);
+      
+      }
   //Vidas
  
 
@@ -297,33 +306,22 @@ function moverBala() {
     bullet.splice(index, 1);
   }
 }
-function crearEnemy(){
-  for(let i =-1 ; i< 4 ; i++){
-    const enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
-    enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2 - enemy.width * ENEMY_SCALE + i * enemy.width * ENEMY_SCALE );
-    enemy.setY((enemy.height * ENEMY_SCALE) / 2);
-    enemy.setScale(ENEMY_SCALE);
- 
-    enemys.push(enemy)
-    
-    }
-}
 function colision(bala) {
   if (
-    bala.x >= enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
-    bala.x <= enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
-    bala.y >= enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
-    bala.y <= enemy.y + (enemy.height * ENEMY_SCALE) / 2
+    bala.x >= enemys.x - (enemys.width * ENEMY_SCALE) / 2 &&
+    bala.x <= enemys.x + (enemys.width * ENEMY_SCALE) / 2 &&
+    bala.y >= enemys.y - (enemys.height * ENEMY_SCALE) / 2 &&
+    bala.y <= enemys.y + (enemys.height * ENEMY_SCALE) / 2
   ) {
     if (contador < 1) {
       collectEnemy();
     }
-    explosion.setPosition(enemy.x, enemy.y);
+    explosion.setPosition(enemys.x, enemys.y);
     explosion.explode();
-    enemy.setY((enemy.height * ENEMY_SCALE) / 2);
-    enemy.setX(
-      Math.random() * (SCREEN_WIDTH - enemy.width * ENEMY_SCALE) +
-        (enemy.width / 2) * ENEMY_SCALE
+    enemys.setY((enemys.height * ENEMY_SCALE) / 2);
+    enemys.setX(
+      Math.random() * (SCREEN_WIDTH - enemys.width * ENEMY_SCALE) +
+        (enemys.width / 2) * ENEMY_SCALE
     );
     bala.destroy();
   }
@@ -355,14 +353,14 @@ function moverEnemy() {
   enemy.setY(enemy.y + ENEMY_VELOCITY);
   if (
     (player.x + (player.width / 3) * PLAYER_SCALE >=
-      enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
+      enemys.x - (enemys.width * ENEMY_SCALE) / 2 &&
       player.x - (player.width / 3) * PLAYER_SCALE <=
-        enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
+        enemys.x + (enemys.width * ENEMY_SCALE) / 2 &&
       player.y + (player.height / 3) * PLAYER_SCALE >=
-        enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
+        enemys.y - (enemys.height * ENEMY_SCALE) / 2 &&
       player.y - (player.height / 3) * PLAYER_SCALE <=
-        enemy.y + (enemy.height * ENEMY_SCALE) / 2) ||
-    enemy.y >= SCREEN_HEIGHT
+        enemys.y + (enemys.height * ENEMY_SCALE) / 2) ||
+      enemys.y >= SCREEN_HEIGHT
   ) {
     if(frameVidas<0){
       frameVidas=200
@@ -376,7 +374,7 @@ function moverEnemy() {
       console.log(numVidas);
       // enemy.destroy();
     
-    explosion.setPosition(enemy.x, enemy.y);
+    explosion.setPosition(enemys.x, enemys.y);
     explosion.explode();
     if (numVidas <= 0) {
       gameOver.setX(SCREEN_WIDTH / 2);
@@ -388,7 +386,7 @@ function moverEnemy() {
     }
   }
   } else if (score >= 200) {
-    enemy.setY(enemy.y + ENEMY_VELOCITY * 1.3);
+    enemys.setY(enemys.y + ENEMY_VELOCITY * 1.3);
   }
   if (score === 500) {
     win.setX(SCREEN_WIDTH / 2);
@@ -404,3 +402,4 @@ function play() {
 function pause() {
   playPause = false;
 }
+
