@@ -22,6 +22,7 @@ let disparo;
 let recarga;
 let enemys = [];
 let modaba;
+let enterBar;
 let carga;
 let win;
 let final;
@@ -79,21 +80,11 @@ function create() {
   player.setY(SCREEN_HEIGHT - (player.height * PLAYER_SCALE) / 2);
   player.setScale(PLAYER_SCALE);
 
-  //enemy setup
-  // enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
-  // enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2);
-  // enemy.setY((enemy.height * ENEMY_SCALE) / 2);
-  // enemy.setScale(ENEMY_SCALE);
-    for(let i =0 ; i< 3 ; i++){
-      enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
-      enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2 - enemy.width * ENEMY_SCALE + i * enemy.width * ENEMY_SCALE );
-      enemy.setY((enemy.height * ENEMY_SCALE) / 2);
-      enemy.setScale(ENEMY_SCALE);
-   
-      enemys.push(enemy)
-      console.log(enemys);
-      
-      }
+  // enemy setup
+  enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
+  enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2);
+  enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+  enemy.setScale(ENEMY_SCALE);
   //Vidas
  
 
@@ -306,8 +297,18 @@ function moverBala() {
     bullet.splice(index, 1);
   }
 }
+function crearEnemy(){
+  for(let i =-1 ; i< 4 ; i++){
+    const enemy = this.add.image(SCREEN_WIDTH / 2, SCREEN_HEIGHT, "enemy");
+    enemy.setX((SCREEN_WIDTH - enemy.width * ENEMY_SCALE) / 2 - enemy.width * ENEMY_SCALE + i * enemy.width * ENEMY_SCALE );
+    enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+    enemy.setScale(ENEMY_SCALE);
+ 
+    enemys.push(enemy)
+    
+    }
+}
 function colision(bala) {
-  for(enemy of enemys){
   if (
     bala.x >= enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
     bala.x <= enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
@@ -316,17 +317,42 @@ function colision(bala) {
   ) {
     if (contador < 1) {
       collectEnemy();
+      
     }
+
     explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
     enemy.setY((enemy.height * ENEMY_SCALE) / 2);
     enemy.setX(
-      Math.random() * (SCREEN_WIDTH - enemys.width * ENEMY_SCALE) +
-        (enemys.width / 2) * ENEMY_SCALE
+      Math.random() * (SCREEN_WIDTH - enemy.width * ENEMY_SCALE) +
+        (enemy.width / 2) * ENEMY_SCALE
     );
     bala.destroy();
+    
   }
 }
+function colisionPlayer(bala) {
+  if (
+    bala.x >= enemy.x - (enemy.width * ENEMY_SCALE) / 2 &&
+    bala.x <= enemy.x + (enemy.width * ENEMY_SCALE) / 2 &&
+    bala.y >= enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
+    bala.y <= enemy.y + (enemy.height * ENEMY_SCALE) / 2
+  ) {
+    if (contador < 1) {
+      collectEnemy();
+      
+    }
+
+    explosion.setPosition(enemy.x, enemy.y);
+    explosion.explode();
+    enemy.setY((enemy.height * ENEMY_SCALE) / 2);
+    enemy.setX(
+      Math.random() * (SCREEN_WIDTH - enemy.width * ENEMY_SCALE) +
+        (enemy.width / 2) * ENEMY_SCALE
+    );
+    
+    
+  }
 }
 function collectEnemy() {
   contador = 24;
@@ -352,19 +378,6 @@ function recargar() {
   }
 }
 function moverEnemy() {
-  let index = -1;
-  for (let i = 0; i < enemys.length; i++) {
-    enemys[i].setY(enemys[i].y - ENEMY_VELOCITY);
-    colision(enemys[i]);
-    if (enemys[i].y <= 0 - enemys[i].height) {
-      enemys[i].destroy();
-      index = i;
-    }
-    colision(player);
-  }
-  if (index >= 0) {
-    enemys.splice(index, 1);
-  
   enemy.setY(enemy.y + ENEMY_VELOCITY);
   if (
     (player.x + (player.width / 3) * PLAYER_SCALE >=
@@ -375,12 +388,9 @@ function moverEnemy() {
         enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
       player.y - (player.height / 3) * PLAYER_SCALE <=
         enemy.y + (enemy.height * ENEMY_SCALE) / 2) ||
-      enemy.y >= SCREEN_HEIGHT
-      
+    enemy.y >= SCREEN_HEIGHT
   ) {
-
     if(frameVidas<0){
-      enemy.splice()
       frameVidas=200
       numVidas--;
       if(numVidas==2){
@@ -412,7 +422,7 @@ function moverEnemy() {
     final.play();
     pausa = true;
   }
-}
+  colisionPlayer(player)
 }
 
 function play() {
@@ -421,4 +431,3 @@ function play() {
 function pause() {
   playPause = false;
 }
-
