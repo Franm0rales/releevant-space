@@ -338,10 +338,7 @@ function colisionPlayer(bala) {
     bala.y >= enemy.y - (enemy.height * ENEMY_SCALE) / 2 &&
     bala.y <= enemy.y + (enemy.height * ENEMY_SCALE) / 2
   ) {
-    if (contador < 1) {
-      collectEnemy();
-      
-    }
+    
 
     explosion.setPosition(enemy.x, enemy.y);
     explosion.explode();
